@@ -16,7 +16,6 @@ sea-orm = { workspace = true }
 actix-di = { workspace = true }
 async-trait = { workspace = true }
 
-
 configurator = { path = "../configurator" }
 database = { path = "../database" }
 entity = { path = "../entity" }

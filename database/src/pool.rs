@@ -6,11 +6,12 @@ pub async fn create_pool(db_url: String) -> Result<DatabaseConnection, DbErr> {
     let mut conn_opts = ConnectOptions::new(db_url);
 
     conn_opts
-        .min_connections(5)
         .max_connections(100)
+        .min_connections(5)
         .connect_timeout(Duration::from_secs(8))
-        .acquire_timeout(Duration::from_secs(8))
-        .max_lifetime(Duration::from_secs(30));
+        .idle_timeout(Duration::from_secs(8))
+        .max_lifetime(Duration::from_secs(8))
+        .sqlx_logging(true);
 
     Database::connect(conn_opts).await
 }

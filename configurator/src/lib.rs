@@ -12,7 +12,6 @@ pub struct Server {
 #[allow(unused)]
 pub struct Database {
     pub url: String,
-    pub schema: String,
 }
 
 #[derive(Debug, Deserialize)]
@@ -22,14 +21,29 @@ pub struct Settings {
     pub database: Database,
 }
 
+fn find_config(dir: &str) -> Result<Config, ConfigError> {
+    let root_dir =
+        std::env::current_dir().expect("Error: Failed to get current dir (configurator)");
+
+    let binding = root_dir.join(dir);
+    let config_dir = binding.to_str().expect("Error: Failed to parse config dir");
+
+    return Config::builder()
+        .add_source(File::with_name(config_dir))
+        .build();
+}
+
 impl Settings {
     pub fn new() -> Result<Self, ConfigError> {
-        let builder = Config::builder()
-            .add_source(File::with_name(
-                "/home/evie/code/Personal/Kythi/backend/Config",
-            ))
-            .build()?;
+        let config_search = find_config("../Config");
 
-        builder.try_deserialize()
+        match config_search {
+            Ok(config) => return config.try_deserialize(),
+            Err(_) => {
+                let config_search = find_config("Config").expect("Error: Failed to find config");
+
+                return config_search.try_deserialize();
+            }
+        }
     }
 }

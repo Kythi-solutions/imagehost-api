@@ -9,7 +9,7 @@ pub struct UserRepository {
 }
 
 #[async_trait]
-impl Repository for UserRepository {
+impl Repository<User::Model> for UserRepository {
     async fn by_id(&self, id: i32) -> Result<Option<User::Model>, DbErr> {
         User::Entity::find_by_id(id)
             .one(&self.database.to_owned())
