@@ -4,3 +4,6 @@ port = 6969
 
 [database]
 url = "postgres://username:password@localhost:5432/db"
+
+[biscuit]
+private_key = ""
