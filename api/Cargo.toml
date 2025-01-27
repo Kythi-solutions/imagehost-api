@@ -15,6 +15,9 @@ serde_derive = { workspace = true }
 sea-orm = { workspace = true }
 actix-di = { workspace = true }
 async-trait = { workspace = true }
+log = { workspace = true }
+fern = { workspace = true }
+humantime = { workspace = true }
 
 configurator = { path = "../configurator" }
 database = { path = "../database" }

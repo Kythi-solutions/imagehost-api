@@ -28,6 +28,9 @@ sea-orm = { version = "1.1.4", features = [
     "macros",
 ] }
 async-trait = "0.1.85"
+log = "0.4"
+fern = "0.7"
+humantime = "2.1.0"
 
 api = { path = "./api" }
 configurator = { path = "./configurator" }
@@ -44,6 +47,9 @@ actix-di = "0.1.1"
 async-trait = "0.1.85"
 syn = "2.0.96"
 quote = "1.0.38"
+log = "0.4"
+fern = "0.7"
+humantime = "2.1.0"
 sea-orm = { version = "1.1.4", features = [
     "sqlx-postgres",
     "runtime-tokio-rustls",

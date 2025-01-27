@@ -1,0 +1,10 @@
+[server]
+ip = "0.0.0.0"
+port = 6969
+
+[database]
+url = "postgres://username:password@localhost:5432/db"
+
+[logger]
+level = 5                  # TODO: add documentation for log level
+output_file = "output.log"

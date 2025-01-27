@@ -1,24 +1,32 @@
 use config::{Config, ConfigError, File};
 use serde_derive::Deserialize;
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 #[allow(unused)]
 pub struct Server {
     pub ip: String,
     pub port: u16,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 #[allow(unused)]
 pub struct Database {
     pub url: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
+#[allow(unused)]
+pub struct Logger {
+    pub level: i32,
+    pub output_file: String,
+}
+
+#[derive(Debug, Deserialize, Clone)]
 #[allow(unused)]
 pub struct Settings {
     pub server: Server,
     pub database: Database,
+    pub logger: Logger,
 }
 
 fn find_config(dir: &str) -> Result<Config, ConfigError> {
