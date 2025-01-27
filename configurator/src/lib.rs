@@ -23,10 +23,18 @@ pub struct Logger {
 
 #[derive(Debug, Deserialize, Clone)]
 #[allow(unused)]
+pub struct Biscuit {
+    pub public_key: String,
+    pub private_key: String,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+#[allow(unused)]
 pub struct Settings {
     pub server: Server,
     pub database: Database,
     pub logger: Logger,
+    pub biscuit: Biscuit,
 }
 
 fn find_config(dir: &str) -> Result<Config, ConfigError> {
