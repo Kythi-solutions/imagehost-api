@@ -1,4 +1,3 @@
-use actix_web::web::trace;
 use api;
 use log::debug;
 
