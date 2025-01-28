@@ -54,6 +54,8 @@ humantime = "2.1.0"
 biscuit-auth = "5.0.0"
 actix-web-httpauth = "0.8.2"
 futures-util = "0.3.31"
+email_address = "0.2.9"
+simple-string-patterns = "0.3.16"
 sea-orm = { version = "1.1.4", features = [
     "sqlx-postgres",
     "runtime-tokio-rustls",

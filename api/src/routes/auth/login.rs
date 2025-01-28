@@ -4,10 +4,10 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize)]
 struct LoginRequest {
     identifier: String,
-    password: String
+    password: String,
 }
 
 #[post("/login")]
-pub async fn login(req: web::Json<LoginRequest>) -> impl Responder {
-    req.identifier.clone()
+pub async fn login(data: web::Json<LoginRequest>) -> impl Responder {
+    data.identifier.clone()
 }

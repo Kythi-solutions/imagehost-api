@@ -22,6 +22,7 @@ actix-web-httpauth = { workspace = true }
 futures-util = { workspace = true }
 derive_more = { workspace = true }
 biscuit-auth = { workspace = true }
+email_address = { workspace = true }
 
 configurator = { path = "../configurator" }
 database = { path = "../database" }
