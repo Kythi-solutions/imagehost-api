@@ -3,8 +3,6 @@ use sea_orm::{DeriveActiveEnum, EnumIter, Iterable};
 use sea_orm_migration::{prelude::*, schema::*};
 use serde::{Deserialize, Serialize};
 
-use super::m20250120_192657_user::User;
-
 #[derive(DeriveMigrationName)]
 pub struct Migration;
 
@@ -25,26 +23,19 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Credential::Table)
                     .if_not_exists()
-                    .col(pk_auto(Credential::Id))
-                    .col(integer(Credential::UserId))
-                    .col(string(Credential::Secret))
+                    .col(
+                        integer(Credential::Id)
+                            .primary_key()
+                            .unique_key()
+                            .auto_increment(),
+                    )
+                    .col(integer(Credential::UserId).not_null())
+                    .col(string(Credential::Secret).not_null())
                     .col(
                         ColumnDef::new(Credential::Provider)
-                            .enumeration(ProviderEnum, AuthProvider::iter()),
+                            .enumeration(ProviderEnum, AuthProvider::iter())
+                            .not_null(),
                     )
-                    .to_owned(),
-            )
-            .await?;
-
-        manager
-            .create_foreign_key(
-                sea_query::ForeignKey::create()
-                    .name("FK_credential_user_id")
-                    // HoopId from users_hoops table is a fk to the hoops table
-                    .from(User::Table, User::Id)
-                    .to(Credential::Table, Credential::Id)
-                    .on_delete(ForeignKeyAction::Cascade)
-                    .on_update(ForeignKeyAction::Cascade)
                     .to_owned(),
             )
             .await

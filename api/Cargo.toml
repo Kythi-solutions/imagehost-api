@@ -12,6 +12,7 @@ tokio = { workspace = true }
 config = { workspace = true }
 serde = { workspace = true }
 serde_derive = { workspace = true }
+serde_json = { workspace = true }
 sea-orm = { workspace = true }
 actix-di = { workspace = true }
 async-trait = { workspace = true }
@@ -21,8 +22,11 @@ humantime = { workspace = true }
 actix-web-httpauth = { workspace = true }
 futures-util = { workspace = true }
 derive_more = { workspace = true }
-biscuit-auth = { workspace = true }
 email_address = { workspace = true }
+argon2 = { workspace = true }
+jsonwebtoken = { workspace = true }
+actix-session = { workspace = true }
+actix-identity = { workspace = true }
 
 configurator = { path = "../configurator" }
 database = { path = "../database" }

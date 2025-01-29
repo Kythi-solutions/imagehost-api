@@ -51,11 +51,19 @@ quote = "1.0.38"
 log = "0.4"
 fern = "0.7"
 humantime = "2.1.0"
-biscuit-auth = "5.0.0"
+jsonwebtoken = "9.3.0"
 actix-web-httpauth = "0.8.2"
 futures-util = "0.3.31"
+actix-session = { version = "0.10.1", features = [
+    "default",
+    "redis-pool",
+    "redis-session",
+    "redis-session-rustls",
+] }
+actix-identity = "0.8.0"
 email_address = "0.2.9"
-simple-string-patterns = "0.3.16"
+argon2 = "0.5.3"
+serde_json = "1.0.138"
 sea-orm = { version = "1.1.4", features = [
     "sqlx-postgres",
     "runtime-tokio-rustls",

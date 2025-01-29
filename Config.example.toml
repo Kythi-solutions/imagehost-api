@@ -1,9 +1,17 @@
 [server]
 ip = "0.0.0.0"
-port = 6969
+port = 4001
 
 [database]
-url = "postgres://username:password@localhost:5432/db"
+url = "postgres://postgres@localhost:5432/kythi" # self-explanatory
 
-[biscuit]
-private_key = ""
+[redis]
+url = "redis://127.0.0.1:6379" # self-explanatory
+
+[logger]
+level = 5                  # TODO: add documentation for log level
+output_file = "output.log" # file where logs are saved
+
+[identity]
+secret = ""      # 256 byte string of alphanumeric characters
+deadline = 86400 # basically expiration, given in seconds, i recommend 24 hours min

@@ -16,6 +16,12 @@ pub struct Database {
 
 #[derive(Debug, Deserialize, Clone)]
 #[allow(unused)]
+pub struct Redis {
+    pub url: String,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+#[allow(unused)]
 pub struct Logger {
     pub level: i32,
     pub output_file: String,
@@ -23,9 +29,8 @@ pub struct Logger {
 
 #[derive(Debug, Deserialize, Clone)]
 #[allow(unused)]
-pub struct Biscuit {
-    pub public_key: String,
-    pub private_key: String,
+pub struct Identity {
+    pub secret: String,
 }
 
 #[derive(Debug, Deserialize, Clone)]
@@ -33,8 +38,9 @@ pub struct Biscuit {
 pub struct Settings {
     pub server: Server,
     pub database: Database,
+    pub redis: Redis,
     pub logger: Logger,
-    pub biscuit: Biscuit,
+    pub identity: Identity,
 }
 
 fn find_config(dir: &str) -> Result<Config, ConfigError> {
