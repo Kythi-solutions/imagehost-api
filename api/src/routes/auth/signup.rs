@@ -1,20 +1,25 @@
 use actix_identity::Identity;
 use actix_web::{
-    http::StatusCode, post, web, HttpMessage, HttpRequest, HttpResponse, HttpResponseBuilder,
-    Responder, ResponseError,
+    http::StatusCode,
+    post,
+    web::{self},
+    HttpMessage, HttpRequest, Result,
 };
-use derive_more::derive::{Display, Error, From};
 use entity::entities::{prelude::*, sea_orm_active_enums::ProviderEnum};
 use log::trace;
-use sea_orm::{ActiveModelTrait, DatabaseConnection, DbErr, Set, TransactionTrait};
+use sea_orm::{
+    ActiveModelTrait, ColumnTrait, Condition, DatabaseConnection, DbErr, EntityTrait, QueryFilter,
+    Set, TransactionTrait,
+};
 use serde::{Deserialize, Serialize};
+use serde_json::{json, Value};
 
 use crate::infrastructure::{
     common::{
         hashing,
-        validator::{validate_email, validate_username},
+        validator::{validate_email, validate_password, validate_username},
     },
-    http::response::JsonResponse,
+    http::response::{DynamicData, JsonResponse},
 };
 
 #[derive(Serialize, Deserialize)]
@@ -24,20 +29,12 @@ struct SignupRequest {
     password: String,
 }
 
-#[derive(Debug, Display, Error, Serialize, Deserialize, From)]
-enum SignupError {
-    #[display("internal error")]
-    InternalError,
-
-    #[display("bad request")]
-    BadClientData {
-        username_error: Option<String>,
-        email_error: Option<String>,
-        password_error: Option<String>,
-    },
-
-    #[display("timeout")]
-    Timeout,
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+struct SignupError {
+    username_error: Option<String>,
+    email_error: Option<String>,
+    password_error: Option<String>,
 }
 
 #[post("/signup")]
@@ -45,28 +42,86 @@ async fn signup(
     request: HttpRequest,
     data: web::Json<SignupRequest>,
     database: web::Data<DatabaseConnection>,
-) -> Result<impl Responder, SignupError> {
+) -> Result<JsonResponse, JsonResponse> {
     if let Err(err) = validate_username(data.username.clone()) {
-        return Err(SignupError::BadClientData {
-            username_error: Some(err.as_string()),
-            email_error: None,
-            password_error: None,
+        return Err(JsonResponse {
+            code: StatusCode::BAD_REQUEST.as_u16(),
+            data: None,
+            error: Some(DynamicData::JsonValue(
+                SignupError {
+                    email_error: None,
+                    password_error: None,
+                    username_error: Some(err.to_string()),
+                }
+                .into(),
+            )),
         });
     }
 
     if let Err(err) = validate_email(data.email.clone()) {
-        return Err(SignupError::BadClientData {
-            username_error: None,
-            email_error: Some(err.to_string()),
-            password_error: None,
+        return Err(JsonResponse {
+            code: StatusCode::BAD_REQUEST.as_u16(),
+            data: None,
+            error: Some(DynamicData::JsonValue(
+                SignupError {
+                    email_error: Some(err.to_string()),
+                    password_error: None,
+                    username_error: None,
+                }
+                .into(),
+            )),
         });
     }
+
+    if let Err(err) = validate_password(data.password.clone()) {
+        return Err(JsonResponse {
+            code: StatusCode::BAD_REQUEST.as_u16(),
+            data: None,
+            error: Some(DynamicData::JsonValue(
+                SignupError {
+                    email_error: None,
+                    password_error: Some(err.to_string()),
+                    username_error: None,
+                }
+                .into(),
+            )),
+        });
+    }
+
+    match User::Entity::find()
+        .filter(
+            Condition::any().add(
+                User::Column::Username
+                    .eq(data.username.clone())
+                    .add(User::Column::Email.eq(data.email.clone())),
+            ),
+        )
+        .one(database.as_ref())
+        .await
+    {
+        Ok(user) => match user {
+            Some(_) => {
+                return Err(JsonResponse {
+                    code: StatusCode::BAD_REQUEST.as_u16(),
+                    data: None,
+                    error: Some(DynamicData::String(
+                        "Username/Email is already in use".to_string(),
+                    )),
+                });
+            }
+            None => {}
+        },
+        Err(err) => {
+            trace!("{}", err);
+            return Err(JsonResponse::internal_error());
+        }
+    };
 
     let hashed_password = match hashing::hash_password(data.password.clone()) {
         Ok(hash) => hash,
         Err(err) => {
             trace!("{}", format!("Error: Failed to hash password {}", err));
-            return Err(SignupError::InternalError);
+            return Err(JsonResponse::internal_error());
         }
     };
 
@@ -98,29 +153,21 @@ async fn signup(
         Ok(user_am) => user_am,
         Err(err) => {
             trace!("{:?}", err);
-            return Err(SignupError::InternalError);
+            return Err(JsonResponse::internal_error());
         }
     };
 
     let _ = Identity::login(&request.extensions(), user_am.id.to_string());
 
-    Ok("")
+    Ok(JsonResponse {
+        code: StatusCode::ACCEPTED.as_u16(),
+        data: Some(DynamicData::String("Success".to_string())),
+        error: None,
+    })
 }
 
-impl ResponseError for SignupError {
-    fn error_response(&self) -> HttpResponse {
-        HttpResponseBuilder::new(self.status_code()).json(JsonResponse {
-            code: self.status_code().as_u16(),
-            data: None,
-            error: Some(self.to_string()),
-        })
-    }
-
-    fn status_code(&self) -> StatusCode {
-        match self {
-            Self::BadClientData { .. } => StatusCode::BAD_REQUEST,
-            SignupError::InternalError => StatusCode::INTERNAL_SERVER_ERROR,
-            SignupError::Timeout => StatusCode::REQUEST_TIMEOUT,
-        }
+impl Into<Value> for SignupError {
+    fn into(self) -> Value {
+        json!(self)
     }
 }

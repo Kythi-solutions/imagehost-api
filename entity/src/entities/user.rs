@@ -9,53 +9,11 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     pub username: String,
+    pub email: String,
     pub two_factor: bool,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
-pub enum Relation {
-    #[sea_orm(
-        belongs_to = "super::access_token::Entity",
-        from = "Column::Id",
-        to = "super::access_token::Column::Id",
-        on_update = "Cascade",
-        on_delete = "Cascade"
-    )]
-    AccessToken,
-    #[sea_orm(
-        belongs_to = "super::credential::Entity",
-        from = "Column::Id",
-        to = "super::credential::Column::Id",
-        on_update = "Cascade",
-        on_delete = "Cascade"
-    )]
-    Credential,
-    #[sea_orm(
-        belongs_to = "super::file::Entity",
-        from = "Column::Id",
-        to = "super::file::Column::Id",
-        on_update = "Cascade",
-        on_delete = "Cascade"
-    )]
-    File,
-}
-
-impl Related<super::access_token::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::AccessToken.def()
-    }
-}
-
-impl Related<super::credential::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::Credential.def()
-    }
-}
-
-impl Related<super::file::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::File.def()
-    }
-}
+pub enum Relation {}
 
 impl ActiveModelBehavior for ActiveModel {}
