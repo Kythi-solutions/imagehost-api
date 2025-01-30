@@ -1,6 +1,8 @@
 use async_trait::async_trait;
 use entity::entities::prelude::*;
-use sea_orm::{DatabaseConnection, DbErr, EntityTrait, Insert, InsertResult};
+use sea_orm::{
+    ColumnTrait, DatabaseConnection, DbErr, EntityTrait, Insert, InsertResult, QueryFilter,
+};
 
 use super::Repository;
 
@@ -39,5 +41,12 @@ impl Repository<Credential::Entity> for CredentialRepository {
 impl CredentialRepository {
     pub fn new(database: DatabaseConnection) -> Self {
         Self { database: database }
+    }
+
+    pub async fn by_user_id(&self, user_id: i32) -> Result<Vec<Credential::Model>, DbErr> {
+        Credential::Entity::find()
+            .filter(Credential::Column::UserId.eq(user_id))
+            .all(&self.database.to_owned())
+            .await
     }
 }

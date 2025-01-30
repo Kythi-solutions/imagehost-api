@@ -1,6 +1,5 @@
 use actix_identity::Identity;
 use actix_web::{
-    http::StatusCode,
     post,
     web::{self},
     HttpMessage, HttpRequest, Result,
@@ -44,70 +43,52 @@ async fn signup(
     database: web::Data<DatabaseConnection>,
 ) -> Result<JsonResponse, JsonResponse> {
     if let Err(err) = validate_username(data.username.clone()) {
-        return Err(JsonResponse {
-            code: StatusCode::BAD_REQUEST.as_u16(),
-            data: None,
-            error: Some(DynamicData::JsonValue(
-                SignupError {
-                    email_error: None,
-                    password_error: None,
-                    username_error: Some(err.to_string()),
-                }
-                .into(),
-            )),
-        });
+        return Err(JsonResponse::bad_request(DynamicData::JsonValue(
+            SignupError {
+                email_error: None,
+                password_error: None,
+                username_error: Some(err.to_string()),
+            }
+            .into(),
+        )));
     }
 
     if let Err(err) = validate_email(data.email.clone()) {
-        return Err(JsonResponse {
-            code: StatusCode::BAD_REQUEST.as_u16(),
-            data: None,
-            error: Some(DynamicData::JsonValue(
-                SignupError {
-                    email_error: Some(err.to_string()),
-                    password_error: None,
-                    username_error: None,
-                }
-                .into(),
-            )),
-        });
+        return Err(JsonResponse::bad_request(DynamicData::JsonValue(
+            SignupError {
+                email_error: Some(err.to_string()),
+                password_error: None,
+                username_error: None,
+            }
+            .into(),
+        )));
     }
 
     if let Err(err) = validate_password(data.password.clone()) {
-        return Err(JsonResponse {
-            code: StatusCode::BAD_REQUEST.as_u16(),
-            data: None,
-            error: Some(DynamicData::JsonValue(
-                SignupError {
-                    email_error: None,
-                    password_error: Some(err.to_string()),
-                    username_error: None,
-                }
-                .into(),
-            )),
-        });
+        return Err(JsonResponse::bad_request(DynamicData::JsonValue(
+            SignupError {
+                email_error: None,
+                password_error: Some(err.to_string()),
+                username_error: None,
+            }
+            .into(),
+        )));
     }
 
     match User::Entity::find()
         .filter(
-            Condition::any().add(
-                User::Column::Username
-                    .eq(data.username.clone())
-                    .add(User::Column::Email.eq(data.email.clone())),
-            ),
+            Condition::any()
+                .add(User::Column::Username.eq(data.username.clone()))
+                .add(User::Column::Email.eq(data.email.clone())),
         )
         .one(database.as_ref())
         .await
     {
         Ok(user) => match user {
             Some(_) => {
-                return Err(JsonResponse {
-                    code: StatusCode::BAD_REQUEST.as_u16(),
-                    data: None,
-                    error: Some(DynamicData::String(
-                        "Username/Email is already in use".to_string(),
-                    )),
-                });
+                return Err(JsonResponse::bad_request(DynamicData::String(
+                    "Username/Email is already in use".to_string(),
+                )));
             }
             None => {}
         },
@@ -130,6 +111,7 @@ async fn signup(
             Box::pin(async move {
                 let user_am = User::ActiveModel {
                     username: Set(data.username.clone()),
+                    email: Set(data.email.clone()),
                     two_factor: Set(false),
                     ..Default::default()
                 }
@@ -159,11 +141,7 @@ async fn signup(
 
     let _ = Identity::login(&request.extensions(), user_am.id.to_string());
 
-    Ok(JsonResponse {
-        code: StatusCode::ACCEPTED.as_u16(),
-        data: Some(DynamicData::String("Success".to_string())),
-        error: None,
-    })
+    Ok(JsonResponse::success(None))
 }
 
 impl Into<Value> for SignupError {

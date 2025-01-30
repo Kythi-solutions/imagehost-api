@@ -32,11 +32,37 @@ impl JsonResponse {
         Self { code, error, data }
     }
 
+    pub fn bad_request(error: DynamicData) -> Self {
+        Self {
+            code: StatusCode::BAD_REQUEST.as_u16(),
+            data: None,
+            error: Some(error),
+        }
+    }
+
     pub fn internal_error() -> Self {
-        JsonResponse {
+        Self {
             code: StatusCode::INTERNAL_SERVER_ERROR.as_u16(),
             data: None,
             error: Some(DynamicData::String("Internal Error".to_string())),
+        }
+    }
+
+    pub fn generic_login_error() -> Self {
+        Self {
+            code: StatusCode::BAD_REQUEST.as_u16(),
+            data: None,
+            error: Some(DynamicData::String(
+                "Some data you provided is incorrect".to_string(),
+            )),
+        }
+    }
+
+    pub fn success(data: Option<DynamicData>) -> Self {
+        Self {
+            code: StatusCode::OK.as_u16(),
+            data: data,
+            error: None,
         }
     }
 }

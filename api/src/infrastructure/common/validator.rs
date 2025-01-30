@@ -15,18 +15,21 @@ pub enum PasswordError {
 }
 
 pub fn validate_username(username: String) -> Result<bool, UsernameError> {
-    if !username.chars().all(char::is_alphanumeric) {
-        return Err(UsernameError::InvalidFormat);
-    };
-
     if 3 > username.len() || 32 < username.len() {
         return Err(UsernameError::InvalidLength);
     }
+
+    if !username.chars().all(char::is_alphanumeric) {
+        return Err(UsernameError::InvalidFormat);
+    };
 
     return Ok(true);
 }
 
 pub fn validate_email(email: String) -> Result<bool, email_address::Error> {
+    if email.len() <= 0 {
+        return Err(email_address::Error::InvalidCharacter);
+    }
     match email_address::EmailAddress::from_str(&email) {
         Ok(_) => return Ok(true),
         Err(err) => return Err(err),
