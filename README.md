@@ -12,7 +12,7 @@ The backend for Kythi's file host, a ShareX-centered uploader. I am currently in
 - Rename Config.example.toml -> Config.toml
 - Create a PostgreSQL database and provide it in the config
 - Create a Redis server and provide it in the config
-- Create a 64-char secret and provide it for the identity secret
+- Create a 64-char secret and provide it in the config
 
 ### Building
 ```sh
