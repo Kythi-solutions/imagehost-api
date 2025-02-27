@@ -10,7 +10,6 @@ use actix_web::{
     App, HttpServer,
 };
 
-// use biscuit_auth::{KeyPair, PrivateKey};
 use database;
 use infrastructure::{
     http::response::JsonResponse,

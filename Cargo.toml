@@ -3,41 +3,38 @@ name = "kythi-backend"
 version = "0.1.0"
 edition = "2021"
 
+# add new external crates here for syntax highlighting in vscode and so they can inherit crates
 [workspace]
-members = [
-    "api",
-    "configurator",
-    "database",
-    "entity",
-    "migration",
-] # add new external crates here for syntax highlighting in vscode and so they can inherit crates
+members = ["api", "configurator", "database", "entity", "migration"]
 
 [workspace.package]
 version = "0.1.0"          # Bump this when main package is bumped
 authors = ["Evie Fogarty"]
 
-[dependencies] # any relevant dependencies for crates
+# any relevant dependencies for crates
+[dependencies]
 actix-web = "4.9.0"
 tokio = { version = "1.43.0", features = ["rt-multi-thread"] }
 config = "0.15.6"
 serde = "1.0.217"
 serde_derive = "1.0.217"
+async-trait = "0.1.85"
+log = "0.4"
+fern = "0.7"
+humantime = "2.1.0"
 sea-orm = { version = "1.1.4", features = [
     "sqlx-postgres",
     "runtime-tokio-rustls",
     "macros",
 ] }
-async-trait = "0.1.85"
-log = "0.4"
-fern = "0.7"
-humantime = "2.1.0"
 
 api = { path = "./api" }
 configurator = { path = "./configurator" }
 database = { path = "./database" }
 
-[workspace.dependencies] # shared dependency versions & features for crates, helps with scalability
-derive_more = { version = "1.0.0", features = ["full"] }
+# shared dependency versions & features for crates, helps with scalability
+[workspace.dependencies]
+derive_more = { version = "2.0.1", features = ["full"] }
 actix-web = "4.9.0"
 async-std = { version = "1", features = ["attributes", "tokio1"] }
 tokio = { version = "1.43.0", features = ["rt-multi-thread"] }
@@ -46,7 +43,7 @@ serde = "1.0.217"
 serde_derive = "1.0.217"
 actix-di = "0.1.1"
 async-trait = "0.1.85"
-syn = "2.0.96"
+syn = "2.0.98"
 quote = "1.0.38"
 log = "0.4"
 fern = "0.7"
@@ -54,12 +51,6 @@ humantime = "2.1.0"
 jsonwebtoken = "9.3.0"
 actix-web-httpauth = "0.8.2"
 futures-util = "0.3.31"
-actix-session = { version = "0.10.1", features = [
-    "default",
-    "redis-pool",
-    "redis-session",
-    "redis-session-rustls",
-] }
 actix-identity = "0.8.0"
 email_address = "0.2.9"
 argon2 = "0.5.3"
@@ -68,4 +59,10 @@ sea-orm = { version = "1.1.4", features = [
     "sqlx-postgres",
     "runtime-tokio-rustls",
     "macros",
+] }
+actix-session = { version = "0.10.1", features = [
+    "default",
+    "redis-pool",
+    "redis-session",
+    "redis-session-rustls",
 ] }
