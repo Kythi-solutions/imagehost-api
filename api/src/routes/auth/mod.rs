@@ -4,7 +4,5 @@ pub mod login;
 pub mod signup;
 
 pub fn routes() -> Scope {
-    Scope::new("/auth")
-        .service(login::login)
-        .service(signup::signup)
+    Scope::new("/auth").service(login::login).service(signup::signup)
 }

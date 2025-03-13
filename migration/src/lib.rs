@@ -12,6 +12,7 @@ impl MigratorTrait for Migrator {
             Box::new(migrations::m20250120_193033_access_token::Migration),
             Box::new(migrations::m20250120_193056_credential::Migration),
             Box::new(migrations::m20250120_193117_file::Migration),
+            Box::new(migrations::m20250313_205730_deletable::Migration)
         ]
     }
 }

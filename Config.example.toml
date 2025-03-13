@@ -13,5 +13,5 @@ level = 5                  # TODO: add documentation for log level
 output_file = "output.log" # file where logs are saved
 
 [identity]
-secret = ""      # 256 byte string of alphanumeric characters
+secret = ""      # Randomized string of length 64
 deadline = 86400 # basically expiration, given in seconds, i recommend 24 hours min

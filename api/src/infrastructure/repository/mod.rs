@@ -1,6 +1,7 @@
 use async_trait::async_trait;
-use sea_orm::{DbErr, EntityTrait, Insert, InsertResult};
+use sea_orm::{ DbErr, EntityTrait, Insert, InsertResult };
 
+pub mod access_token;
 pub mod credential;
 pub mod user;
 

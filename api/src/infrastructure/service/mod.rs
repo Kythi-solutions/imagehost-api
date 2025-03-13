@@ -1,1 +1,1 @@
-pub trait Service {}
+pub mod oauth;

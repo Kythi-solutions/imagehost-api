@@ -14,15 +14,16 @@ authors = ["Evie Fogarty"]
 # any relevant dependencies for crates
 [dependencies]
 actix-web = "4.9.0"
-tokio = { version = "1.43.0", features = ["rt-multi-thread"] }
-config = "0.15.6"
+tokio = { version = "1.44.1", features = ["rt-multi-thread"] }
+config = "0.15.11"
 serde = "1.0.217"
-serde_derive = "1.0.217"
-async-trait = "0.1.85"
+serde_derive = "1.0.219"
+async-trait = "0.1.87"
 log = "0.4"
 fern = "0.7"
-humantime = "2.1.0"
-sea-orm = { version = "1.1.4", features = [
+humantime = "2.2.0"
+oauth2 = "5.0.0"
+sea-orm = { version = "1.1.7", features = [
     "sqlx-postgres",
     "runtime-tokio-rustls",
     "macros",
@@ -35,7 +36,9 @@ database = { path = "./database" }
 # shared dependency versions & features for crates, helps with scalability
 [workspace.dependencies]
 derive_more = { version = "2.0.1", features = ["full"] }
-actix-web = "4.9.0"
+actix-web = "4.10.2"
+actix-multipart = "0.7.2"
+mime = "0.3.17"
 async-std = { version = "1", features = ["attributes", "tokio1"] }
 tokio = { version = "1.43.0", features = ["rt-multi-thread"] }
 config = "0.15.6"
@@ -43,8 +46,8 @@ serde = "1.0.217"
 serde_derive = "1.0.217"
 actix-di = "0.1.1"
 async-trait = "0.1.85"
-syn = "2.0.98"
-quote = "1.0.38"
+syn = "2.0.100"
+quote = "1.0.40"
 log = "0.4"
 fern = "0.7"
 humantime = "2.1.0"
@@ -54,7 +57,8 @@ futures-util = "0.3.31"
 actix-identity = "0.8.0"
 email_address = "0.2.9"
 argon2 = "0.5.3"
-serde_json = "1.0.138"
+serde_json = "1.0.140"
+oauth2 = "5.0.0"
 sea-orm = { version = "1.1.4", features = [
     "sqlx-postgres",
     "runtime-tokio-rustls",

@@ -8,6 +8,8 @@ authors.workspace = true
 
 [dependencies]
 actix-web = { workspace = true }
+actix-multipart = { workspace = true }
+mime = { workspace = true }
 tokio = { workspace = true }
 config = { workspace = true }
 serde = { workspace = true }
@@ -27,6 +29,7 @@ argon2 = { workspace = true }
 jsonwebtoken = { workspace = true }
 actix-session = { workspace = true }
 actix-identity = { workspace = true }
+oauth2 = { workspace = true }
 
 configurator = { path = "../configurator" }
 database = { path = "../database" }
